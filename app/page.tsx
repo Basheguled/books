@@ -1,7 +1,34 @@
+"use client";
+
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import Logo from "./components/Logo";
+import SearchBar from "./components/SearchBar";
+
 export default function Home() {
+  const router = useRouter();
+  const [search, setSearch] = React.useState("");
+
+  const onSubmit = React.useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
+
+      const requestBody = { q: search };
+      const queryParams = new URLSearchParams(requestBody).toString();
+      router.push(`/search?${queryParams}`);
+    },
+    [router, search]
+  );
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Books
+    <main className="w-full h-full flex flex-col items-center justify-center p-24">
+      <div className="w-[800px] h-[800px] rounded-full bg-[var(--secondary)] flex flex-col items-center justify-center gap-12">
+        <Logo width={470} height={201} />
+        <form className="flex flex-col gap-6" onSubmit={onSubmit}>
+          <h1>Explore our catalog</h1>
+          <SearchBar setSearch={setSearch} />
+        </form>
+      </div>
     </main>
   );
 }

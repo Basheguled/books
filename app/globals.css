@@ -5,16 +5,44 @@
 :root {
   --foreground: 0, 0, 0;
   --background: 255, 255, 255;
+  --secondary: #fad5bb;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground: 255, 255, 255;
     --background: 0, 0, 0;
+    --secondary: #fad5bb;
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
+
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+h1 {
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+h2 {
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+h3 {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
 }
