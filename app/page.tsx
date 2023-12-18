@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import SearchBar from "./components/SearchBar";
 
@@ -23,9 +22,12 @@ export default function Home() {
   );
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <form className="w-full p-24" onSubmit={onSubmit}>
-        <Typography variant="h2">Book Search</Typography>
+    <main className="flex h-full flex-col items-center justify-center p-24">
+      <form
+        className="w-full flex flex-col items-start justify-center p-24 gap-6"
+        onSubmit={onSubmit}
+      >
+        <h1>Book Search</h1>
         <SearchBar setSearch={setSearch} />
       </form>
     </main>

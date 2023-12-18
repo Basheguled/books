@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import { Suspense } from "react";
 import SearchBar from "../components/SearchBar";
 import Image from "next/image";
@@ -67,11 +66,33 @@ import Image from "next/image";
   }
 }
 */
+type Book = {
+  kind: string;
+  id: string;
+  selfLink: string;
+  volumeInfo: {
+    title: string;
+    authors: string[];
+    publisher: string;
+    publishedDate: string;
+    description: string;
+    pageCount: number;
+    printType: string;
+    categories: string[];
+    averageRating: 3;
+    ratingsCount: 9;
+    imageLinks: {
+      thumbnail: string;
+    };
+    language: string;
+    previewLink: string;
+    infoLink: string;
+  };
+};
 
 async function getBooks(searchParams: {
   [key: string]: string | string[] | undefined;
-}) {
-  console.log("context", searchParams);
+}): Promise<{ totalItems: number; books: Book[] }> {
   const apiKey = "AIzaSyA7vhetq2aHQOr2kV3aHUylD_4-rWGfD2A";
   const requestBody = { ...searchParams, key: apiKey, maxResults: "40" };
   const queryParams = new URLSearchParams(requestBody).toString();
@@ -80,9 +101,7 @@ async function getBooks(searchParams: {
     `https://www.googleapis.com/books/v1/volumes?${queryParams}`
   );
   const data = await response.json();
-  const totalItems = data.totalItems;
-  const books = Array.from(data.items);
-  return { totalItems, books };
+  return { totalItems: data.totalItems, books: data.items };
 }
 
 const SearchResults = async ({
@@ -90,26 +109,27 @@ const SearchResults = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
+  const searchQuery = searchParams.q;
   const { totalItems, books } = await getBooks(searchParams);
-  console.log(typeof books, books.length, books[0]);
+
   return (
     <main className="flex min-h-screen flex-col items-start justify-start p-24">
-      <Typography variant="subtitle1">Results for {searchParams.q}</Typography>
+      <h2>Results for &quot;{searchQuery}&quot;</h2>
       <p>{totalItems}</p>
       <div className="grid grid-cols-5 gap-8">
         {books.map((book) => {
           return (
             <>
-              {book.volumeInfo?.imageLinks?.thumbnail ? (
-                // <Image
-                <img
+              {book.volumeInfo.imageLinks?.thumbnail ? (
+                <Image
                   key={book.id}
                   alt="book cover"
                   src={book.volumeInfo.imageLinks.thumbnail}
+                  height={100}
                   width={200}
                 />
               ) : (
-                <p>{book.title}</p>
+                <p>{book.volumeInfo.title}</p>
               )}
             </>
           );
