@@ -2,7 +2,11 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import logo from "../public/logo.svg";
 import SearchBar from "./components/SearchBar";
+
+const Logo = () => <Image priority={true} src={logo} alt="logo" />;
 
 export default function Home() {
   const router = useRouter();
@@ -14,22 +18,20 @@ export default function Home() {
 
       const requestBody = { q: search };
       const queryParams = new URLSearchParams(requestBody).toString();
-      console.log("search: ", search);
-
       router.push(`/search?${queryParams}`);
     },
     [router, search]
   );
 
   return (
-    <main className="flex h-full flex-col items-center justify-center p-24">
-      <form
-        className="w-full flex flex-col items-start justify-center p-24 gap-6"
-        onSubmit={onSubmit}
-      >
-        <h1>Book Search</h1>
-        <SearchBar setSearch={setSearch} />
-      </form>
+    <main className="w-full h-full flex flex-col items-center justify-center p-24">
+      <div className="w-[800px] h-[800px] rounded-full bg-[var(--secondary)] flex flex-col items-center justify-center gap-12">
+        <Logo />
+        <form className="flex flex-col gap-6" onSubmit={onSubmit}>
+          <h1>Explore our catalog</h1>
+          <SearchBar setSearch={setSearch} />
+        </form>
+      </div>
     </main>
   );
 }

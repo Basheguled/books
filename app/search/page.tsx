@@ -3,6 +3,12 @@ import SearchBar from "../components/SearchBar";
 import Image from "next/image";
 
 /*
+
+volumeInfo: {
+  averageRating: 3,
+  ratingsCount: 9,
+  publishedDate: '2012-03-23',
+}
 {
   kind: 'books#volume',
   id: 'Mug4uI3ZGo8C',
@@ -94,7 +100,7 @@ async function getBooks(searchParams: {
   [key: string]: string | string[] | undefined;
 }): Promise<{ totalItems: number; books: Book[] }> {
   const apiKey = "AIzaSyA7vhetq2aHQOr2kV3aHUylD_4-rWGfD2A";
-  const requestBody = { ...searchParams, key: apiKey, maxResults: "40" };
+  const requestBody = { ...searchParams, key: apiKey, maxResults: "20" };
   const queryParams = new URLSearchParams(requestBody).toString();
 
   const response = await fetch(
