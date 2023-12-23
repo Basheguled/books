@@ -75,7 +75,7 @@ const Description = ({ book }: { book: Book }) => {
           `— \$${book.saleInfo.retailPrice?.amount}`}
       </h3>
       {book.volumeInfo.authors?.length && (
-        <p className="opacity-65">by {book.volumeInfo.authors[0]}</p>
+        <p className="text-slate-500">by {book.volumeInfo.authors[0]}</p>
       )}
       <strong>
         {book.volumeInfo.averageRating &&
@@ -102,7 +102,7 @@ const Entry = ({ book }: { book: Book }) => {
         rel="noopener noreferrer"
       >
         <div className="flex flex-row gap-6">
-          <div className="w-[150px]">
+          <div className="w-[150px] min-w-[150px]">
             <Image
               alt="book cover"
               layout="responsive"
@@ -149,7 +149,13 @@ export default function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   return (
-    <Suspense fallback={<h2>Loading results for {searchParams.q}...</h2>}>
+    <Suspense
+      fallback={
+        <h2 className="absolute top-1/2 right-1/2">
+          Loading results for {searchParams.q}...
+        </h2>
+      }
+    >
       <SearchResults searchParams={searchParams} />
     </Suspense>
   );
