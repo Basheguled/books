@@ -2,11 +2,8 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import logo from "../public/logo.svg";
+import Logo from "./components/Logo";
 import SearchBar from "./components/SearchBar";
-
-const Logo = () => <Image priority={true} src={logo} alt="logo" />;
 
 export default function Home() {
   const router = useRouter();
@@ -26,7 +23,7 @@ export default function Home() {
   return (
     <main className="w-full h-full flex flex-col items-center justify-center p-24">
       <div className="w-[800px] h-[800px] rounded-full bg-[var(--secondary)] flex flex-col items-center justify-center gap-12">
-        <Logo />
+        <Logo width={470} height={201} />
         <form className="flex flex-col gap-6" onSubmit={onSubmit}>
           <h1>Explore our catalog</h1>
           <SearchBar setSearch={setSearch} />
