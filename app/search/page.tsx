@@ -1,54 +1,7 @@
 import { Suspense } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import Logo from "../components/Logo";
-import noImage from "../../public/no-image.svg";
-
-type Book = {
-  kind: string;
-  id: string;
-  selfLink: string;
-  volumeInfo: {
-    title: string;
-    authors?: string[];
-    publisher?: string;
-    publishedDate?: string;
-    description?: string;
-    pageCount?: number;
-    printType?: string;
-    categories?: string[];
-    averageRating?: 3;
-    ratingsCount?: 9;
-    imageLinks?: {
-      thumbnail?: string;
-    };
-    language?: string;
-    previewLink?: string;
-    infoLink: string;
-  };
-  saleInfo: {
-    country?: string;
-    saleability?: string;
-    isEbook?: boolean;
-    listPrice?: { amount?: number; currencyCode?: string };
-    retailPrice?: { amount?: number; currencyCode?: string };
-    buyLink?: string;
-  };
-};
-
-async function getBooks(searchParams: {
-  [key: string]: string | string[] | undefined;
-}): Promise<{ totalItems: number; books: Book[] }> {
-  const apiKey = "AIzaSyA7vhetq2aHQOr2kV3aHUylD_4-rWGfD2A";
-  const requestBody = { ...searchParams, key: apiKey, maxResults: "20" };
-  const queryParams = new URLSearchParams(requestBody).toString();
-
-  const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?${queryParams}`
-  );
-  const data = await response.json();
-  return { totalItems: data.totalItems, books: data.items };
-}
+import Results, { type Book } from "../components/Results";
 
 const NavBar = () => {
   return (
@@ -66,97 +19,48 @@ const NavBar = () => {
   );
 };
 
-const Description = ({ book }: { book: Book }) => {
-  return (
-    <div className="flex flex-col gap-2 max-w-[600px]">
-      <h3 className="text-ellipsis line-clamp-2">
-        {book.volumeInfo.title}{" "}
-        {book.saleInfo.retailPrice &&
-          `— \$${book.saleInfo.retailPrice?.amount}`}
-      </h3>
-      {book.volumeInfo.authors?.length && (
-        <p className="text-slate-500">by {book.volumeInfo.authors[0]}</p>
-      )}
-      <strong>
-        {book.volumeInfo.averageRating &&
-          book.volumeInfo.ratingsCount &&
-          `${book.volumeInfo.averageRating}⭐ avg rating — ${
-            book.volumeInfo.ratingsCount
-          } rating${book.volumeInfo.ratingsCount > 1 ? "s" : ""} — `}{" "}
-        {book.volumeInfo.publishedDate &&
-          `published ${book.volumeInfo.publishedDate.substring(0, 4)}`}
-      </strong>
-      <p className="h-20 text-ellipsis line-clamp-3">
-        {book.volumeInfo.description}
-      </p>
-    </div>
-  );
-};
+async function getBooks(searchParams: {
+  [key: string]: string | undefined;
+}): Promise<{ totalItems: number; books: Book[] }> {
+  const apiKey = "AIzaSyA7vhetq2aHQOr2kV3aHUylD_4-rWGfD2A";
+  const { q } = searchParams;
 
-const Entry = ({ book }: { book: Book }) => {
-  return (
-    <div className="w-[774px] p-4 rounded hover:bg-[var(--secondary)]">
-      <a
-        href={book.volumeInfo.infoLink}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <div className="flex flex-row gap-6">
-          <div className="w-[150px] min-w-[150px]">
-            <Image
-              alt="book cover"
-              layout="responsive"
-              src={
-                book.volumeInfo.imageLinks?.thumbnail
-                  ? book.volumeInfo.imageLinks.thumbnail
-                  : noImage
-              }
-              width={200}
-              height={200}
-            />
-          </div>
-          <Description book={book} />
-        </div>
-      </a>
-    </div>
-  );
-};
+  if (!q) {
+    return { totalItems: 0, books: [] };
+  }
 
-const SearchResults = async ({
+  const requestBody = { q, key: apiKey, maxResults: "10" };
+  const queryParams = new URLSearchParams(requestBody).toString();
+
+  const response = await fetch(
+    `https://www.googleapis.com/books/v1/volumes?${queryParams}`
+  );
+  const data = await response.json();
+  return { totalItems: data.totalItems, books: data.items };
+}
+
+export default async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) => {
-  const searchQuery = searchParams.q;
+  searchParams: { [key: string]: string | undefined };
+}) {
   const { totalItems, books } = await getBooks(searchParams);
 
   return (
     <main className="flex h-full w-full flex-col items-start justify-start">
       <NavBar />
       <div className="w-full py-16 px-24 flex flex-col gap-10">
-        <h2>
-          {totalItems} Results for &quot;{searchQuery}&quot;
-        </h2>
-        {books && books.map((book) => <Entry key={book.id} book={book} />)}
+        <Suspense
+          key={searchParams.q}
+          fallback={<h2>Loading results for {searchParams.q}...</h2>}
+        >
+          <Results
+            totalItems={totalItems}
+            books={books}
+            searchQuery={searchParams.q ?? ""}
+          />
+        </Suspense>
       </div>
     </main>
-  );
-};
-
-export default function Page({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  return (
-    <Suspense
-      fallback={
-        <h2 className="absolute top-1/2 right-1/2">
-          Loading results for {searchParams.q}...
-        </h2>
-      }
-    >
-      <SearchResults searchParams={searchParams} />
-    </Suspense>
   );
 }

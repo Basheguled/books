@@ -8,13 +8,20 @@ const Spyglass = () => (
   </svg>
 );
 
-const SearchBar = ({ setSearch }: { setSearch: (search: string) => void }) => (
-  <div className="flex flex-row items-center justify-center w-full gap-6">
+const SearchBar = ({
+  setSearch,
+  defaultValue,
+}: {
+  setSearch: (search: string) => void;
+  defaultValue?: string;
+}) => (
+  <div className="flex flex-row items-center justify-start w-full gap-6">
     <div className="h-12 w-[520px] relative">
       <Spyglass />
       <input
         aria-label="Search for a book or author"
         className="h-full w-full pl-12 border-2 border-solid border-black rounded focus:outline-none"
+        defaultValue={defaultValue}
         inputMode="search"
         placeholder="Search for a book or author..."
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
