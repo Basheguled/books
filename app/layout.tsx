@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 const raleway = Raleway({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Book search",
+  title: "Great Reads",
 };
 
 export default function RootLayout({
