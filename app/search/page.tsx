@@ -22,14 +22,13 @@ const NavBar = () => {
 async function getBooks(searchParams: {
   [key: string]: string | undefined;
 }): Promise<{ totalItems: number; books: Book[] }> {
-  const apiKey = "AIzaSyA7vhetq2aHQOr2kV3aHUylD_4-rWGfD2A";
   const { q } = searchParams;
 
   if (!q) {
     return { totalItems: 0, books: [] };
   }
-
-  const requestBody = { q, key: apiKey, maxResults: "10" };
+  const key = process.env.NEXT_PUBLIC_KEY ?? "";
+  const requestBody = { q, key, maxResults: "10" };
   const queryParams = new URLSearchParams(requestBody).toString();
 
   const response = await fetch(

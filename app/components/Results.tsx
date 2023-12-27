@@ -117,11 +117,11 @@ const Results = ({
       try {
         isFetching.current = true;
 
-        const apiKey = "AIzaSyA7vhetq2aHQOr2kV3aHUylD_4-rWGfD2A";
         const startIndex = String((page - 1) * 10);
+        const key = process.env.NEXT_PUBLIC_KEY ?? "";
         const requestBody = {
           q: searchQuery,
-          key: apiKey,
+          key,
           maxResults: "10",
           startIndex,
         };
