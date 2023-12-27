@@ -35,6 +35,11 @@ async function getBooks(searchParams: {
   const response = await fetch(
     `https://www.googleapis.com/books/v1/volumes?${queryParams}`
   );
+
+  if (!response.ok) {
+    return { totalItems: 0, books: [] };
+  }
+
   const data = await response.json();
   return { totalItems: data.totalItems, books: data.items };
 }

@@ -154,7 +154,7 @@ const Results = ({
   );
 
   if (!results.length) {
-    <div>No results</div>;
+    return <h2>No results for &quot;{searchQuery}&quot;</h2>;
   }
 
   return (
