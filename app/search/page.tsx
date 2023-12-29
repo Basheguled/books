@@ -1,7 +1,6 @@
-import { Suspense } from "react";
 import Link from "next/link";
 import Logo from "../components/Logo";
-import Results, { type Book } from "../components/Results";
+import Results from "../components/Results";
 
 const NavBar = () => {
   return (
@@ -19,51 +18,16 @@ const NavBar = () => {
   );
 };
 
-async function getBooks(searchParams: {
-  [key: string]: string | undefined;
-}): Promise<{ totalItems: number; books: Book[] }> {
-  const { q } = searchParams;
-
-  if (!q) {
-    return { totalItems: 0, books: [] };
-  }
-  const key = process.env.NEXT_PUBLIC_KEY ?? "";
-  const requestBody = { q, key, maxResults: "10" };
-  const queryParams = new URLSearchParams(requestBody).toString();
-
-  const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?${queryParams}`
-  );
-
-  if (!response.ok) {
-    return { totalItems: 0, books: [] };
-  }
-
-  const data = await response.json();
-  return { totalItems: data.totalItems, books: data.items };
-}
-
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
-  const { totalItems, books } = await getBooks(searchParams);
-
   return (
     <main className="flex h-full w-full flex-col items-start justify-start">
       <NavBar />
       <div className="w-full py-16 px-24 flex flex-col gap-10">
-        <Suspense
-          key={searchParams.q}
-          fallback={<h2>Loading results for {searchParams.q}...</h2>}
-        >
-          <Results
-            totalItems={totalItems}
-            books={books}
-            searchQuery={searchParams.q ?? ""}
-          />
-        </Suspense>
+        <Results searchQuery={searchParams.q ?? ""} />
       </div>
     </main>
   );

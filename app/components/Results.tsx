@@ -1,12 +1,12 @@
 "use client";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import InfiniteScroll from "react-infinite-scroller";
 import noImage from "../../public/no-image.svg";
 import SearchBar from "./SearchBar";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-export type Book = {
+type Book = {
   kind: string;
   id: string;
   etag: string;
@@ -94,49 +94,72 @@ const Entry = ({ book }: { book: Book }) => {
   );
 };
 
-const Results = ({
-  books,
+async function getBooks({
   searchQuery,
-  totalItems,
+  page,
 }: {
-  books: Book[];
   searchQuery: string;
-  totalItems: number;
-}) => {
+  page?: number;
+}) {
+  if (!searchQuery) {
+    return { items: [], totalItems: 0 };
+  }
+
+  const key = process.env.NEXT_PUBLIC_KEY ?? "";
+  const startIndex = page ? String((page - 1) * 10) : "0";
+  const requestBody = { q: searchQuery, key, maxResults: "10", startIndex };
+  const queryParams = new URLSearchParams(requestBody).toString();
+
+  const response = await fetch(
+    `https://www.googleapis.com/books/v1/volumes?${queryParams}`
+  );
+
+  if (!response.ok) {
+    return { items: [], totalItems: 0 };
+  }
+
+  const data = await response.json();
+  return { books: data.items ?? [], totalItems: data.totalItems ?? 0 };
+}
+
+const Results = ({ searchQuery }: { searchQuery: string }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const { push } = useRouter();
 
+  const hasInitialData = useRef(false);
   const isFetching = useRef(false);
   const [search, setSearch] = useState("");
-  const [items, setItems] = useState([books]);
-  const results = items.flat();
+  const [totalItems, setTotalItems] = useState(0);
+  const [items, setItems] = useState<Book[]>([]);
 
-  const loadMore = async (page: number) => {
-    if (!isFetching.current && searchQuery) {
-      try {
-        isFetching.current = true;
+  const fetchInitialData = useCallback(async () => {
+    const { books, totalItems } = await getBooks({ searchQuery });
+    setItems(books);
+    setTotalItems(totalItems);
+    hasInitialData.current = true;
+  }, [searchQuery]);
 
-        const startIndex = String((page - 1) * 10);
-        const key = process.env.NEXT_PUBLIC_KEY ?? "";
-        const requestBody = {
-          q: searchQuery,
-          key,
-          maxResults: "10",
-          startIndex,
-        };
-        const queryParams = new URLSearchParams(requestBody).toString();
+  useEffect(() => {
+    fetchInitialData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
-        const response = await fetch(
-          `https://www.googleapis.com/books/v1/volumes?${queryParams}`
-        );
-        const data = await response.json();
-        setItems((prev) => [...prev, data.items]);
-      } finally {
-        isFetching.current = false;
+  const loadMore = useCallback(
+    async (page: number) => {
+      if (!isFetching.current && searchQuery) {
+        try {
+          isFetching.current = true;
+
+          const { books } = await getBooks({ searchQuery, page });
+          setItems((prev) => [...prev, ...books]);
+        } finally {
+          isFetching.current = false;
+        }
       }
-    }
-  };
+    },
+    [searchQuery]
+  );
 
   const onSubmit = useCallback(
     async (event: React.FormEvent) => {
@@ -148,14 +171,37 @@ const Results = ({
       } else {
         params.delete("q");
       }
-      replace(`${pathname}?${params.toString()}`);
+      push(`${pathname}?${params.toString()}`);
+      hasInitialData.current = false;
     },
-    [pathname, replace, search, searchParams]
+    [pathname, push, search, searchParams]
   );
 
-  if (!results.length) {
-    return <h2>No results for &quot;{searchQuery}&quot;</h2>;
-  }
+  const content = useMemo(() => {
+    if (!hasInitialData.current) {
+      return <h2>Loading ...</h2>;
+    }
+
+    if (!items?.length && hasInitialData.current) {
+      return <h2>No results for &quot;{searchQuery}&quot;</h2>;
+    }
+
+    return (
+      <>
+        <h2>
+          {totalItems} Results for &quot;{searchQuery}&quot;
+        </h2>
+        <InfiniteScroll
+          hasMore
+          pageStart={1}
+          loadMore={loadMore}
+          loader={<h2 className="py-6">Loading ...</h2>}
+        >
+          {items && items.map((book) => <Entry key={book.etag} book={book} />)}
+        </InfiniteScroll>
+      </>
+    );
+  }, [items, loadMore, searchQuery, totalItems]);
 
   return (
     <>
@@ -165,18 +211,7 @@ const Results = ({
           defaultValue={searchParams.get("q")?.toString()}
         />
       </form>
-      <h2>
-        {totalItems} Results for &quot;{searchQuery}&quot;
-      </h2>
-      <InfiniteScroll
-        hasMore
-        pageStart={0}
-        loadMore={loadMore}
-        loader={<h2 className="py-6">Loading ...</h2>}
-      >
-        {results &&
-          results.map((book) => <Entry key={book.etag} book={book} />)}
-      </InfiniteScroll>
+      {content}
     </>
   );
 };
