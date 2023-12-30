@@ -75,16 +75,17 @@ const Entry = ({ book }: { book: Book }) => {
         rel="noopener noreferrer"
       >
         <div className="flex flex-row gap-6">
-          <div className="relative w-[150px] min-w-[150px]">
+          <div className="max-w-[150px] max-h-[230px]">
             <Image
               alt="book cover"
-              fill
-              sizes="(max-width: 1200px) 100vw, 100vw"
+              className="object-contain w-full relative h-auto"
               src={
                 book.volumeInfo.imageLinks?.thumbnail
                   ? book.volumeInfo.imageLinks.thumbnail
                   : noImage
               }
+              width={200}
+              height={200}
             />
           </div>
           <Description book={book} />
