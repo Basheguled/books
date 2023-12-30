@@ -95,6 +95,24 @@ const Entry = ({ book }: { book: Book }) => {
   );
 };
 
+const SkeletonLoader = () => {
+  return (
+    <div className="w-[774px] p-4 rounded">
+      <div className="animate-pulse flex flex-row gap-6">
+        <div className="w-[120px] h-[180px] bg-slate-300" />
+        <div className="flex flex-col gap-2 w-[600px]">
+          <div className="h-7 w-3/4 bg-slate-300 rounded" />
+          <div className="h-7 w-1/4 bg-slate-300 rounded" />
+
+          <div className="h-7 w-full bg-slate-300 rounded" />
+          <div className="h-7 w-full bg-slate-300 rounded" />
+          <div className="h-7 w-full bg-slate-300 rounded" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 async function getBooks({
   searchQuery,
   page,
@@ -180,7 +198,14 @@ const Results = ({ searchQuery }: { searchQuery: string }) => {
 
   const content = useMemo(() => {
     if (!hasInitialData.current) {
-      return <h2>Loading ...</h2>;
+      return (
+        <>
+          <h2>Loading ...</h2>
+          <SkeletonLoader />
+          <SkeletonLoader />
+          <SkeletonLoader />
+        </>
+      );
     }
 
     if (!items?.length && hasInitialData.current) {
