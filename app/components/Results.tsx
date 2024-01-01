@@ -79,6 +79,7 @@ const Entry = ({ book }: { book: Book }) => {
             <Image
               alt="book cover"
               className="object-contain w-full relative h-auto"
+              priority
               src={
                 book.volumeInfo.imageLinks?.thumbnail
                   ? book.volumeInfo.imageLinks.thumbnail
