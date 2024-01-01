@@ -15,8 +15,8 @@ const SearchBar = ({
   setSearch: (search: string) => void;
   defaultValue?: string;
 }) => (
-  <div className="flex flex-row items-center justify-start w-full gap-6">
-    <div className="h-12 w-[520px] relative">
+  <div className="flex flex-row items-center sm:justify-start justify-center w-full gap-6">
+    <div className="h-12 lg:w-[520px] md:w-[400px] w-3/4 relative">
       <Spyglass />
       <input
         aria-label="Search for a book or author"
@@ -31,7 +31,7 @@ const SearchBar = ({
       />
     </div>
     <button
-      className="h-12 px-6 py-2 text-white bg-black rounded"
+      className="h-12 px-6 py-2 text-white bg-black rounded hidden lg:block"
       type="submit"
     >
       Search

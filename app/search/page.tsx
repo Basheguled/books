@@ -12,7 +12,9 @@ const NavBar = () => {
         >
           <h2>HOME</h2>
         </Link>
-        <Logo height={50} width={164} />
+        <div className="relative w-[164px] h-[70px] hidden xs:block">
+          <Logo />
+        </div>
       </div>
     </nav>
   );
@@ -26,7 +28,7 @@ export default function Page({
   return (
     <main className="flex h-full w-full flex-col items-start justify-start">
       <NavBar />
-      <div className="w-full py-16 px-24 flex flex-col gap-10">
+      <div className="w-full py-16 px-2 sm:px-12 lg:px-24 flex flex-col gap-10">
         <Results searchQuery={searchParams.q ?? ""} />
       </div>
     </main>

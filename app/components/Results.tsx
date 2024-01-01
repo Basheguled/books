@@ -68,14 +68,14 @@ const Description = ({ book }: { book: Book }) => {
 
 const Entry = ({ book }: { book: Book }) => {
   return (
-    <div className="w-[774px] p-4 rounded hover:bg-[var(--secondary)]">
+    <div className="lg:w-[774px] p-4 rounded hover:bg-[var(--secondary)]">
       <a
         href={book.volumeInfo.infoLink}
         target="_blank"
         rel="noopener noreferrer"
       >
         <div className="flex flex-row gap-6">
-          <div className="max-w-[150px] max-h-[230px]">
+          <div className="min-w-[150px] max-w-[150px] max-h-[230px]">
             <Image
               alt="book cover"
               className="object-contain w-full relative h-auto"
@@ -98,10 +98,10 @@ const Entry = ({ book }: { book: Book }) => {
 
 const SkeletonLoader = () => {
   return (
-    <div className="w-[774px] p-4 rounded">
+    <div className="lg:w-[774px] p-4 rounded">
       <div className="animate-pulse flex flex-row gap-6">
-        <div className="w-[120px] h-[180px] bg-slate-300" />
-        <div className="flex flex-col gap-2 w-[600px]">
+        <div className="w-[160px] h-[240px] bg-slate-300" />
+        <div className="flex flex-col gap-2 lg:w-[600px] w-4/5">
           <div className="h-7 w-3/4 bg-slate-300 rounded" />
           <div className="h-7 w-1/4 bg-slate-300 rounded" />
 
@@ -214,7 +214,7 @@ const Results = ({ searchQuery }: { searchQuery: string }) => {
     }
 
     return (
-      <>
+      <div className="flex flex-col items-center sm:items-start gap-6">
         <h2>
           {totalItems} Results for &quot;{searchQuery}&quot;
         </h2>
@@ -226,7 +226,7 @@ const Results = ({ searchQuery }: { searchQuery: string }) => {
         >
           {items && items.map((book) => <Entry key={book.etag} book={book} />)}
         </InfiniteScroll>
-      </>
+      </div>
     );
   }, [items, loadMore, searchQuery, totalItems]);
 

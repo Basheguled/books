@@ -21,11 +21,16 @@ export default function Home() {
   );
 
   return (
-    <main className="w-full h-full flex flex-col items-center justify-center p-24">
-      <div className="w-[800px] h-[800px] rounded-full bg-[var(--secondary)] flex flex-col items-center justify-center gap-12">
-        <Logo width={470} height={201} />
-        <form className="flex flex-col gap-6" onSubmit={onSubmit}>
-          <h1>Explore our catalog</h1>
+    <main className="w-screen h-screen flex flex-col items-center justify-center">
+      <div className="lg:w-[800px] lg:h-[800px] lg:gap-12 gap-6 w-[75vw] h-[75vw] rounded-full bg-[var(--secondary)] flex flex-col items-center justify-center">
+        <div className="relative lg:w-[470px] lg:h-[201px] w-3/4 h-[32%]">
+          <Logo />
+        </div>
+        <form
+          className="flex flex-col md:gap-6 gap-2 items-center sm:items-start"
+          onSubmit={onSubmit}
+        >
+          <h1 className="text-2xl sm:text-4xl">Explore our catalog</h1>
           <SearchBar setSearch={setSearch} />
         </form>
       </div>
