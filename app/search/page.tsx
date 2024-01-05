@@ -7,7 +7,7 @@ const NavBar = () => {
     <nav className="w-full h-[80px] bg-[var(--secondary)]">
       <div className="h-full w-full flex justify-between items-center px-14 py-2">
         <Link
-          className="hover:bg-black hover:text-[var(--secondary)] p-4 rounded"
+          className="border-b-[3px] border-transparent hover:border-b-[3px] hover:border-b-black pb-2"
           href="/"
         >
           <h2>HOME</h2>
@@ -28,7 +28,7 @@ export default function Page({
   return (
     <main className="flex h-full w-full flex-col items-start justify-start">
       <NavBar />
-      <div className="w-full py-16 px-2 sm:px-12 lg:px-24 flex flex-col gap-10">
+      <div className="w-full max-w-5xl py-16 px-2 sm:px-12 lg:px-24 flex flex-col gap-10">
         <Results searchQuery={searchParams.q ?? ""} />
       </div>
     </main>
