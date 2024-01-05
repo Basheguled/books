@@ -7,35 +7,21 @@ import SearchBar from "./SearchBar";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 type Book = {
-  kind: string;
-  id: string;
   etag: string;
-  selfLink: string;
   volumeInfo: {
     title: string;
     authors?: string[];
-    publisher?: string;
     publishedDate?: string;
     description?: string;
-    pageCount?: number;
-    printType?: string;
-    categories?: string[];
     averageRating?: 3;
     ratingsCount?: 9;
     imageLinks?: {
       thumbnail?: string;
     };
-    language?: string;
-    previewLink?: string;
     infoLink: string;
   };
   saleInfo: {
-    country?: string;
-    saleability?: string;
-    isEbook?: boolean;
-    listPrice?: { amount?: number; currencyCode?: string };
     retailPrice?: { amount?: number; currencyCode?: string };
-    buyLink?: string;
   };
 };
 
@@ -129,9 +115,9 @@ async function getBooks({
   const startIndex = page ? String((page - 1) * 10) : "0";
   const requestBody = { q: searchQuery, key, maxResults: "10", startIndex };
   const queryParams = new URLSearchParams(requestBody).toString();
-
+  const fields = "fields=totalItems,items(etag,volumeInfo(title,authors,publishedDate,description,averageRating,ratingsCount,imageLinks/thumbnail,infoLink),saleInfo)";
   const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?${queryParams}`
+    `https://www.googleapis.com/books/v1/volumes?${queryParams}&${fields}`
   );
 
   if (!response.ok) {

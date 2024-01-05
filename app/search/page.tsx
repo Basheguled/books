@@ -7,7 +7,7 @@ const NavBar = () => {
     <nav className="w-full h-[80px] bg-[var(--secondary)]">
       <div className="h-full w-full flex justify-between items-center px-14 py-2">
         <Link
-          className="border-b-[3px] border-transparent hover:border-b-[3px] hover:border-b-black pb-2"
+          className="border-b-[3px] border-transparent hover:border-b-[3px] hover:border-b-black py-1"
           href="/"
         >
           <h2>HOME</h2>
