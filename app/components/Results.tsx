@@ -115,9 +115,10 @@ async function getBooks({
   const startIndex = page ? String((page - 1) * 10) : "0";
   const requestBody = { q: searchQuery, key, maxResults: "10", startIndex };
   const queryParams = new URLSearchParams(requestBody).toString();
-  const fields = "fields=totalItems,items(etag,volumeInfo(title,authors,publishedDate,description,averageRating,ratingsCount,imageLinks/thumbnail,infoLink),saleInfo)";
+  const fields =
+    "fields=totalItems,items(etag,volumeInfo(title,authors,publishedDate,description,averageRating,ratingsCount,imageLinks/thumbnail,infoLink),saleInfo)";
   const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?${queryParams}&${fields}`
+    `https://www.googleapis.com/books/v1/volumes?${queryParams}&${fields}`,
   );
 
   if (!response.ok) {
@@ -164,12 +165,20 @@ const Results = ({ searchQuery }: { searchQuery: string }) => {
         }
       }
     },
-    [searchQuery]
+    [searchQuery],
   );
 
   const onSubmit = useCallback(
     async (event: React.FormEvent) => {
       event.preventDefault();
+
+      const honeyPot = document.getElementById(
+        "name__confirm",
+      ) as HTMLInputElement;
+      if (honeyPot?.value) {
+        // catch bots
+        return;
+      }
 
       const params = new URLSearchParams(searchParams);
       if (search) {
@@ -180,7 +189,7 @@ const Results = ({ searchQuery }: { searchQuery: string }) => {
       push(`${pathname}?${params.toString()}`);
       hasInitialData.current = false;
     },
-    [pathname, push, search, searchParams]
+    [pathname, push, search, searchParams],
   );
 
   const content = useMemo(() => {

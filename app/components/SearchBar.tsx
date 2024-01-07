@@ -30,6 +30,9 @@ const SearchBar = ({
         type="search"
       />
     </div>
+    <div className="hidden">
+      <input id="name__confirm" type="text" name="name__confirm" />
+    </div>
     <button
       className="h-12 px-6 py-2 text-white bg-black rounded hidden lg:block"
       type="submit"

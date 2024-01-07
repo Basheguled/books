@@ -13,11 +13,19 @@ export default function Home() {
     async (event: React.FormEvent) => {
       event.preventDefault();
 
+      const honeyPot = document.getElementById(
+        "name__confirm",
+      ) as HTMLInputElement;
+      if (honeyPot?.value) {
+        // catch bots
+        return;
+      }
+
       const requestBody = { q: search };
       const queryParams = new URLSearchParams(requestBody).toString();
       router.push(`/search?${queryParams}`);
     },
-    [router, search]
+    [router, search],
   );
 
   return (

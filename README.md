@@ -1,5 +1,4 @@
-
-#  Great Reads 📕
+# Great Reads 📕
 
 This is a fun app I put together using `Next.js` and [the Google Books API](https://developers.google.com/books/docs/overview), hosted on [Vercel](https://vercel.com/). It's primary application is finding books for purchase on Google Books with a fun new UX ✨
 
