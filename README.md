@@ -4,4 +4,4 @@ This is a fun app I put together using `Next.js` and [the Google Books API](http
 
 Took a lot of inspo from the [Google Books website](https://books.google.com/) as well as [goodreads](https://www.goodreads.com/). Hope you enjoy!
 
-## [Check us out!](https://books-basheguled.vercel.app/)
+## [Check us out!](https://books-azure-one.vercel.app)
