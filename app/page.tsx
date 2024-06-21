@@ -38,7 +38,7 @@ export default function Home() {
           className="flex flex-col md:gap-6 gap-2 items-center sm:items-start"
           onSubmit={onSubmit}
         >
-          <h1 className="text-2xl sm:text-4xl">Explore our catalog</h1>
+          <h1>Explore our catalog</h1>
           <SearchBar setSearch={setSearch} />
         </form>
       </div>
